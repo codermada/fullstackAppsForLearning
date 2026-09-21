@@ -1,0 +1,4 @@
+##### CONNEXION TO THE DATABASE #####
+
+apt install postgresql
+psql -h database -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME}
