@@ -10,5 +10,4 @@ const Form = forwardRef<HTMLFormElement, FormProps>(
 );
 
 Form.displayName = 'Form';
-
 export { Form };

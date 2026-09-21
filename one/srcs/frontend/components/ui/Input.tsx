@@ -13,11 +13,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ]
       .filter(Boolean)
       .join(' ');
-
     return <input ref={ref} type={type} className={classes} {...props} />;
   },
 );
 
 Input.displayName = 'Input';
-
 export { Input };

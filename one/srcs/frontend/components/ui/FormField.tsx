@@ -20,16 +20,11 @@ export function FormField({
   return (
     <div className={`space-y-1 ${className}`}>
       {label && (
-        <label
-          htmlFor={htmlFor}
-          className="block text-sm font-medium text-foreground"
-        >
+        <label htmlFor={htmlFor} className="block text-sm font-medium text-foreground">
           {label}
         </label>
       )}
-
       {children}
-
       {error ? (
         <p className="text-sm text-destructive" role="alert">
           {error}

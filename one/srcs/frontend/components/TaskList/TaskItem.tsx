@@ -2,61 +2,73 @@
 
 import { useState } from 'react';
 import type { Task } from '@/lib/schemas';
-import { updateTask, deleteTask } from '@/lib/api';
-import { Button } from '@/components/ui';
-import { Toggle } from '@/components/ui/Toggle';
+import { Button, Toggle } from '@/components/ui';
 
-export default function TaskItem({
-  task,
-  onChange,
-}: {
+interface TaskItemProps {
   task: Task;
-  onChange: () => void;
-}) {
-  const [loading, setLoading] = useState(false);
+  onToggle: (id: number, completed: boolean) => Promise<unknown>;
+  onDelete: (id: number) => Promise<unknown>;
+}
 
-  async function toggleCompleted() {
-    setLoading(true);
+export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isTemp = task.id < 0;
+
+  async function handleToggle() {
+    setPending(true);
+    setError(null);
     try {
-      await updateTask(task.id, { completed: !task.completed });
-      onChange();
+      await onToggle(task.id, !task.completed);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Update failed');
     } finally {
-      setLoading(false);
+      setPending(false);
     }
   }
 
-  async function remove() {
-    setLoading(true);
+  async function handleDelete() {
+    setPending(true);
+    setError(null);
     try {
-      await deleteTask(task.id);
-      onChange();
+      await onDelete(task.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
     } finally {
-      setLoading(false);
+      setPending(false);
     }
   }
 
   return (
     <li
-      className={`flex items-center justify-between gap-4 rounded-md border border-border bg-card px-4 py-3 shadow-sm transition-opacity ${
-        loading ? 'opacity-50' : ''
+      className={`flex flex-col gap-1 rounded-md border border-border bg-card px-4 py-3 shadow-sm transition-opacity ${
+        pending || isTemp ? 'opacity-60' : ''
       }`}
     >
-      <Toggle
-        checked={task.completed}
-        onChange={toggleCompleted}
-        disabled={loading}
-        label={task.task}
-        className="flex-1"
-      />
+      <div className="flex items-center justify-between gap-4">
+        <Toggle
+          checked={task.completed}
+          onChange={handleToggle}
+          disabled={pending || isTemp}
+          label={task.task}
+          className="flex-1"
+        />
 
-      <Button
-        variant="destructive"
-        size="sm"
-        onClick={remove}
-        disabled={loading}
-      >
-        Delete
-      </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={handleDelete}
+          disabled={pending || isTemp}
+        >
+          Delete
+        </Button>
+      </div>
+
+      {error && (
+        <p className="text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      )}
     </li>
   );
 }

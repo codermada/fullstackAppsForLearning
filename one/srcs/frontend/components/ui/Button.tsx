@@ -42,12 +42,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const classes = [base, variants[variant], sizes[size], className]
       .filter(Boolean)
       .join(' ');
-
     return <button ref={ref} type={type} className={classes} {...props} />;
   },
 );
 
 Button.displayName = 'Button';
-
 export { Button };
 export type { Variant as ButtonVariant, Size as ButtonSize };
