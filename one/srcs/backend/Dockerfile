@@ -8,4 +8,4 @@ RUN npm ci
 
 COPY . .
 
-CMD ["npm", "run", "start:dev"]
+CMD ["bash", "./docker-entrypoint.sh"]

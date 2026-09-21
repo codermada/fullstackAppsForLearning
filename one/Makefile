@@ -169,6 +169,9 @@ rebuild-backend:
 rebuild-frontend:
 	$(COMPOSE) up -d --build --no-deps frontend
 
+prisma-studio:
+	docker compose exec backend npm run prisma:studio
+
 # ============================================================
 #  GENERIC ACCESS
 # ============================================================
